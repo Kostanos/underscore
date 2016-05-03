@@ -1141,14 +1141,18 @@
   };
 
   // Returns whether an object has a given set of `key:value` pairs.
+  // It perform deep match
   _.isMatch = function(object, attrs) {
     var keys = _.keys(attrs), length = keys.length;
     if (object == null) return !length;
     var obj = Object(object);
     for (var i = 0; i < length; i++) {
       var key = keys[i];
-      if (attrs[key] !== obj[key] || !(key in obj)) return false;
-    }
+      if (!(key in obj)) return false;
+      if (typeof attrs[key] == 'object' && typeof obj[key] == 'object'){
+        if (!_.isMatch(obj[key], attrs[key])) return false;
+      } else if (attrs[key] !== obj[key]) return false;
+    };
     return true;
   };
 
